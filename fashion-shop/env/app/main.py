@@ -1,0 +1,27 @@
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from app.controllers.product_controller import router as ProductRouter
+from app.database import init_db
+
+# Initialize FastAPI app
+app = FastAPI()
+
+# Initialize the database
+init_db()
+
+# Include product controller routes
+app.include_router(ProductRouter)
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:4200"],  # Thay đổi nếu frontend chạy ở domain khác
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Root endpoint
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to the Fashion Shop API"}
