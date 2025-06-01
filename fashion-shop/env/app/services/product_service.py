@@ -18,11 +18,12 @@ class ProductService:
 
     @staticmethod
     def product_create(db: Session, product_data: ProductCreateSchema):
-        query = text("EXEC Product_Create :Name, :Price, :CategoryID")
+        query = text("EXEC Product_Create :Name, :CategoryID, :Price, :Description")
         db.execute(query, {
             "Name": product_data.Name,
+            "CategoryID": product_data.CategoryID,
             "Price": product_data.Price,
-            "CategoryID": product_data.CategoryID
+            "Description": product_data.Description
         })
         db.commit()
 

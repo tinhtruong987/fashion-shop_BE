@@ -3,6 +3,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 import os
 from dotenv import load_dotenv
+from sqlalchemy.sql import text
 
 # Load environment variables
 load_dotenv(dotenv_path="c:/Users/tinhk/Desktop/BE/fashion-shop/env/.env")
@@ -30,3 +31,19 @@ def get_db():
         yield db
     finally:
         db.close()
+
+def execute_stored_procedure(procedure_name: str, params: dict = None):
+    """
+    Execute a stored procedure with optional parameters.
+    :param procedure_name: Name of the stored procedure.
+    :param params: Dictionary of parameters to pass to the procedure.
+    :return: Result of the procedure execution.
+    """
+    with engine.connect() as connection:
+        if params:
+            query = text(f"EXEC {procedure_name} :{', :'.join(params.keys())}")
+            result = connection.execute(query, **params)
+        else:
+            query = text(f"EXEC {procedure_name}")
+            result = connection.execute(query)
+        return result.fetchall()
